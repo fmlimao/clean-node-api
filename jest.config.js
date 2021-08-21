@@ -1,5 +1,5 @@
 module.exports = {
-  collectCoverage: true,
-  coverageDirectory: 'coverage',
+  // collectCoverage: false,
+  // coverageDirectory: 'coverage',
   coverageProvider: 'v8'
 }
