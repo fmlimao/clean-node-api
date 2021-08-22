@@ -7,10 +7,13 @@ const makeSut = () => {
     auth (email, password) {
       this.email = email
       this.password = password
+
+      return this.accessToken
     }
   }
 
   const authUseCaseSpy = new AuthUseCaseSpy()
+  authUseCaseSpy.accessToken = 'valid_token'
 
   const sut = new LoginRouter(authUseCaseSpy)
   return {
@@ -83,7 +86,8 @@ describe('Login Router', () => {
   })
 
   test('Deve retornar 401 quando credenciais inválidas forem passadas ', () => {
-    const { sut } = makeSut()
+    const { sut, authUseCaseSpy } = makeSut()
+    authUseCaseSpy.accessToken = null
 
     const httpRequest = {
       body: {
@@ -126,5 +130,20 @@ describe('Login Router', () => {
     const httpResponse = sut.route(httpRequest)
 
     expect(httpResponse.statusCode).toBe(500)
+  })
+
+  test('Deve retornar 200 quando credenciais válidas forem passadas ', () => {
+    const { sut } = makeSut()
+
+    const httpRequest = {
+      body: {
+        email: 'valid_email@email.com',
+        password: 'valid_password'
+      }
+    }
+
+    const httpResponse = sut.route(httpRequest)
+
+    expect(httpResponse.statusCode).toBe(200)
   })
 })
