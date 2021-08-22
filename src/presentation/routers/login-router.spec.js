@@ -30,6 +30,18 @@ const makeEmailValidator = () => {
   return emailValidatorSpy
 }
 
+const makeEmailValidatorWithError = () => {
+  class EmailValidatorSpy {
+    isValid (email) {
+      throw new Error()
+    }
+  }
+
+  const emailValidatorSpy = new EmailValidatorSpy()
+
+  return emailValidatorSpy
+}
+
 const makeAuthUseCase = () => {
   class AuthUseCaseSpy {
     async auth (email, password) {
@@ -255,5 +267,24 @@ describe('Login Router', () => {
 
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
+  })
+
+  test('Deve retornar 500 se o EmailValidator ter uma exceção', async () => {
+    const authUseCaseSpy = makeAuthUseCase()
+
+    const emailValidatorSpy = makeEmailValidatorWithError()
+
+    const sut = new LoginRouter(authUseCaseSpy, emailValidatorSpy)
+
+    const httpRequest = {
+      body: {
+        email: 'any_email@email.com',
+        password: 'any_password'
+      }
+    }
+
+    const httpResponse = await sut.route(httpRequest)
+
+    expect(httpResponse.statusCode).toBe(500)
   })
 })
