@@ -1,6 +1,6 @@
 const LoginRouter = require('./login-router.js')
 const { UnauthorizedError, ServerError } = require('../errors')
-const { MissingParanError, InvalidParamError } = require('../../utils/errors')
+const { MissingParamError, InvalidParamError } = require('../../utils/errors')
 
 const makeSut = () => {
   const authUseCaseSpy = makeAuthUseCase()
@@ -80,7 +80,7 @@ describe('Login Router', () => {
     const httpResponse = await sut.route(httpRequest)
 
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new MissingParanError('email'))
+    expect(httpResponse.body).toEqual(new MissingParamError('email'))
   })
 
   test('Deve retornar 400 se o password não for enviado', async () => {
@@ -95,7 +95,7 @@ describe('Login Router', () => {
     const httpResponse = await sut.route(httpRequest)
 
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new MissingParanError('password'))
+    expect(httpResponse.body).toEqual(new MissingParamError('password'))
   })
 
   test('Deve retornar 400 se um email inválido for enviado', async () => {
